@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Clientes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #65c8db;
+            background-size: cover;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .success {
+            background-color: #e6ffe6; /* Verde claro */
+            text-align: center; /* Centrar el texto */
+            margin-bottom: 10px; /* Espacio inferior */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registro de Clientes</h2>
+        <form id="registroForm" action="/guardar_cliente" method="post">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="nit">NIT:</label>
+            <input type="text" id="nit" name="nit" required>
+            <input type="submit" value="Guardar">
+        </form>
+        
+        <!-- Mensaje de éxito -->
+        <div id="mensajeExito" class="success" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Función para mostrar el mensaje de éxito
+        function mostrarMensajeExito(mensaje) {
+            var mensajeExito = document.getElementById('mensajeExito');
+            mensajeExito.textContent = mensaje;
+            mensajeExito.style.display = 'block';
+
+            // Limpiar el formulario después de 2 segundos
+            setTimeout(function() {
+                document.getElementById('nombre').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('nit').value = '';
+                mensajeExito.style.display = 'none';
+            }, 1000);
+        }
+
+        // Manejar el envío del formulario
+        document.getElementById('registroForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar que el formulario se envíe por defecto
+
+            // Enviar el formulario usando AJAX
+            var formData = new FormData(this);
+            fetch('/guardar_cliente', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    mostrarMensajeExito('Datos guardados exitosamente.');
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
